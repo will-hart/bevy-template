@@ -3,6 +3,7 @@ use bevy::{
     render::texture::{ImageLoaderSettings, ImageSampler},
     utils::HashMap,
 };
+use serde::{Deserialize, Serialize};
 
 pub(super) fn plugin(app: &mut App) {
     app.register_type::<HandleMap<ImageKey>>();
@@ -15,7 +16,7 @@ pub(super) fn plugin(app: &mut App) {
     app.init_resource::<HandleMap<SoundtrackKey>>();
 }
 
-#[derive(Copy, Clone, Eq, PartialEq, Hash, Reflect)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash, Reflect, Debug, Serialize, Deserialize)]
 pub enum ImageKey {
     Ducky,
 }
