@@ -27,6 +27,9 @@ pub enum Screen {
     #[default]
     Splash,
     Loading,
+    LoadManifests,
+    ProcessManifests,
+    ManifestLoadingFailed,
     Title,
     Credits,
     Playing,
