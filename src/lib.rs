@@ -3,6 +3,7 @@ mod data;
 mod dev_tools;
 mod game;
 mod screen;
+mod state;
 mod ui;
 
 use bevy::{
@@ -54,7 +55,13 @@ impl Plugin for AppPlugin {
         );
 
         // Add other plugins.
-        app.add_plugins((data::plugin, game::plugin, screen::plugin, ui::plugin));
+        app.add_plugins((
+            data::plugin,
+            state::example::plugin,
+            game::plugin,
+            screen::plugin,
+            ui::plugin,
+        ));
 
         // Enable dev tools for dev builds.
         #[cfg(feature = "dev")]
