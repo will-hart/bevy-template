@@ -2,6 +2,8 @@ mod data;
 #[cfg(feature = "dev")]
 mod dev_tools;
 mod game;
+#[cfg(feature = "procanim")]
+mod procanim;
 mod screen;
 mod state;
 mod ui;
@@ -61,6 +63,9 @@ impl Plugin for AppPlugin {
             game::plugin,
             screen::plugin,
             ui::plugin,
+            // procedural animation test
+            #[cfg(feature = "procanim")]
+            procanim::plugin,
         ));
 
         // Enable dev tools for dev builds.

@@ -16,10 +16,13 @@ serde = { version = "1.0", features = ["derive"] }
 rand = "0.8"
 ron = "*"
 
+bevy_vector_shapes = { version = "0.8", optional = true }
+
 [features]
 default = [
     # Default to a native dev build.
     "dev_native",
+    "procanim",
 ]
 dev = [
     # Improve compile times for dev builds by linking Bevy as a dynamic library.
@@ -33,6 +36,7 @@ dev_native = [
     # Enable embedded asset hot reloading for native dev builds.
     "bevy/embedded_watcher",
 ]
+procanim = ["dep:bevy_vector_shapes"]
 
 # Idiomatic Bevy code often triggers these lints, and the CI workflow treats them as errors.
 # In some cases they may still signal poor code quality however, so consider commenting out these lines.
