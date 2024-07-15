@@ -16,11 +16,15 @@ pub struct AnimationMovementTarget {
 
 #[derive(Component)]
 pub struct AnimationRoot {
+    /// the children for this chain (the children follow the root node)
     pub children: Vec<Entity>,
+    /// the distance between two nodes in the chain
+    link_size: f32,
 }
 
 #[derive(Component)]
 pub struct AnimationNode {
+    /// the radius of the node (for drawing)
     pub radius: f32,
     pub direction: Vec2,
 }
@@ -62,28 +66,28 @@ struct ProcanimGizmoGroup;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(Update, (roots_follow_mouse, draw_anim_gizmos).chain())
-        .add_systems(FixedUpdate, update_procedural_animations)
+        .add_systems(FixedUpdate, resolve_procedural_animations)
         .init_gizmo_group::<ProcanimGizmoGroup>()
         .add_systems(OnEnter(Screen::Playing), spawn_procedural_item);
 }
 
-pub fn update_procedural_animations(
-    roots: Query<(&AnimationRoot, &AnimationNode, &Transform), Without<AnimationChild>>,
+pub fn resolve_procedural_animations(
+    roots: Query<(&AnimationRoot, &Transform), Without<AnimationChild>>,
     mut nodes: Query<(&mut AnimationNode, &mut Transform), With<AnimationChild>>,
 ) {
-    for (root, root_node, root_tx) in roots.iter() {
+    for (root, root_tx) in roots.iter() {
+        // parent position is determined elsewhere in a "movement system". See for
+        // example [`roots_follow_mouse`] below
         let mut parent_pos = root_tx.translation;
-        let mut parent_radius = root_node.radius;
 
         for node_entity in root.children.iter() {
             if let Ok((mut node, mut tx)) = nodes.get_mut(*node_entity) {
                 let delta = tx.translation - parent_pos;
-                tx.translation = parent_pos + delta.normalize_or_zero() * parent_radius;
+                tx.translation = parent_pos + delta.normalize_or_zero() * root.link_size;
 
                 node.direction = (tx.translation - parent_pos).truncate();
 
                 parent_pos = tx.translation;
-                parent_radius = node.radius;
             } else {
                 warn!("Missing child node, aborting animation");
                 break;
@@ -100,8 +104,7 @@ fn spawn_procedural_item(mut commands: Commands) {
     info!("Spawning procanim item");
 
     let radii = [
-        22., 26., 25., 22., 24., 25., 25., 25., 25., 25., 25., 25., 25., 25., 25., 25., 25., 25.,
-        25., 25., 25., 25., 25., 25., 25., 20., 15., 10.,
+        22., 26., 25., 22., 24., 23., 21., 19., 17., 15., 13., 11., 10., 10., 8., 6.,
     ];
 
     let children = radii
@@ -124,7 +127,10 @@ fn spawn_procedural_item(mut commands: Commands) {
             target_pos: Vec2::ZERO,
             speed: 500.,
         },
-        AnimationRoot { children },
+        AnimationRoot {
+            children,
+            link_size: 40.,
+        },
         AnimationNode::new(radii[0]),
     ));
 }
