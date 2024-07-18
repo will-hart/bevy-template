@@ -8,6 +8,9 @@ use bevy::{
 
 use crate::screen::Screen;
 
+/// trying out another approach
+pub(crate) mod two;
+
 #[derive(Component)]
 pub struct AnimationMovementTarget {
     pub target_pos: Vec2,

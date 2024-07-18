@@ -65,7 +65,7 @@ impl Plugin for AppPlugin {
             ui::plugin,
             // procedural animation test
             #[cfg(feature = "procanim")]
-            procanim::plugin,
+            procanim::two::plugin,
         ));
 
         // Enable dev tools for dev builds.
