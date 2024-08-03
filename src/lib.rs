@@ -2,6 +2,7 @@ mod data;
 #[cfg(feature = "dev")]
 mod dev_tools;
 mod game;
+mod procanim;
 mod screen;
 mod state;
 mod ui;
@@ -61,6 +62,7 @@ impl Plugin for AppPlugin {
             game::plugin,
             screen::plugin,
             ui::plugin,
+            procanim::plugin,
         ));
 
         // Enable dev tools for dev builds.
